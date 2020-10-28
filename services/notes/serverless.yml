@@ -12,10 +12,8 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: prod
+  stage: dev
   region: us-east-2
-
-
 
   # These environment variables are made available to our functions
   # under process.env.
@@ -38,8 +36,6 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:us-east-2:070704826772:table/notes"
-
-
 
 functions:
   create:
@@ -78,7 +74,6 @@ functions:
           cors: true
           authorizer: aws_iam
 
-
   update:
     handler: update.main
     events:
@@ -88,16 +83,14 @@ functions:
           cors: true
           authorizer: aws_iam
 
-
   delete:
     handler: delete.main
     events:
-      - http :
+      - http:
           path: notes/{id}
           method: delete
           cors: true
           authorizer: aws_iam
-
 
   billing:
     handler: billing.main
@@ -108,9 +101,7 @@ functions:
           cors: true
           authorizer: aws_iam
 
-
 # Create our resources with separate CloudFormation templates
 resources:
   # API Gateway Errors
-  - ${file(resources/api-gateway-errors.yml)}}
-
+  - ${file(resources/api-gateway-errors.yml)}

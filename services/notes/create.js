@@ -14,7 +14,6 @@ export const main = handler(async (event, context) => {
       createdAt: Date.now()
     }
   };
-
   // Simplify how we make calls to DynamoDB.
   // Don’t want to have to create a new AWS.DynamoDB.DocumentClient().
   // Also, use async/await when working with our database calls.
