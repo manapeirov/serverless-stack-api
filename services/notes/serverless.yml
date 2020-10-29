@@ -9,17 +9,27 @@ plugins:
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
 
+custom:
+  # Stage is based on what is passed in when running serverless commands.
+  # Or falls back to what we have set in the provider section.
+  stage: ${opt:stage, self:provider.stage}
+  # Name of the SST app that's deploying the infrastructure
+  sstApp: ${self:custom.stage}-mana-notes-infrastructure
+
 provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
-  region: us-east-2
+  region: us-east-1
 
   # These environment variables are made available to our functions
   # under process.env.
-
+  # DynamoDB permissions setup below are not for users, but the Lambda functions
+  # No S3 permission setup needed for s3 bucket as the user is directly uploading files to S3 => secure access to s3 differently.
+  # The two external touch points the user has is the API endpoint and S3 bucket. Secure access to these.
   environment:
-    tableName: notes
+    # import the table name exported in CDK (e.g. dev-mana-notes-infrastructure-TableName)
+    tableName: !ImportValue "${self:custom.sstApp}-TableName"
     stripeSecretKey: ${env:STRIPE_SECRET_KEY}
 
   # These environment variables are made available to our functions
@@ -35,7 +45,9 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:us-east-2:070704826772:table/notes"
+      # Restrict IAM role permissions to the specific table for the stage
+      Resource:
+        - !ImportValue "${self:custom.sstApp}-TableArn"
 
 functions:
   create:
@@ -101,7 +113,9 @@ functions:
           cors: true
           authorizer: aws_iam
 
-# Create our resources with separate CloudFormation templates
+# Create our resources with separate CloudFormation templates (.yml files), these will be used to form the stack/ resources on the cloud/ in AWS
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
+  # Cognito Identity Pool Policy
+  - ${file(resources/cognito-policy.yml)}
