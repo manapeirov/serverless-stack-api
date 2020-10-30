@@ -17,31 +17,31 @@ export default class CognitoAuthRole extends cdk.Construct {
         // Iam role can be assumed by users that are authenticated with the Identity Pool that's passed in.
         this.role = new iam.Role(this, "CognitoDefaultAuthenticatedRole", {
             assumedBy: new iam.FederatedPrincipal(
-                "cognito-identity.amazonaws.com",
-                {
-                    StringEquals: {
-                        "cognito-identity.amazonaws.com:aud": identityPool.ref,
-                    },
-                    "ForAnyValue:StringLike": {
-                        "cognito-identity.awmazonaws.com:amr": "authenticated",
-                    },
+              "cognito-identity.amazonaws.com",
+              {
+                StringEquals: {
+                  "cognito-identity.amazonaws.com:aud": identityPool.ref,
                 },
-                "sts:AssumeRoleWithWebIdentity"
+                "ForAnyValue:StringLike": {
+                  "cognito-identity.amazonaws.com:amr": "authenticated",
+                },
+              },
+              "sts:AssumeRoleWithWebIdentity"
             ),
-        })
+          });
 
         // Add a policy to this role using addToPolicy method. This is a standard Cognito related policy
         this.role.addToPolicy(
             new iam.PolicyStatement({
-                effect: iam.Effect.ALLOW,
-                actions: [
-                    "mobileanalytics:PutEvents",
-                    "cognito-sync:*",
-                    "cognito-identity:*",
-                ],
-                resources: ["*"]
+              effect: iam.Effect.ALLOW,
+              actions: [
+                "mobileanalytics:PutEvents",
+                "cognito-sync:*",
+                "cognito-identity:*",
+              ],
+              resources: ["*"],
             })
-        );
+          );
 
         // Attach newly created role to the Identity Pool by creating a new cognito.CfnIdentityPoolRoleattachment
 
@@ -49,10 +49,10 @@ export default class CognitoAuthRole extends cdk.Construct {
             this,
             "IdentityPoolRoleAttachment",
             {
-                identityPoolId: identityPool.ref,
-                roles: { authenticated: this.role.roleArn }
+              identityPoolId: identityPool.ref,
+              roles: { authenticated: this.role.roleArn },
             }
-        );
+          );
 
     }
 }
