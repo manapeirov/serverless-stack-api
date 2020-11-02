@@ -32,6 +32,6 @@ export function init(event, context) {
 // Debug messages logged using this method only get printed out when we call the flush() method.
 // store the log info (when calling debug()) in memory inside the logs array. And when we call flush() (in the case of an error), we console.debug() all those stored log messages.
 export function flush(error) {
-  logs.forEach(({ date, string }) => console.debug(data, string));
+  logs.forEach(({ date, string }) => console.debug(date, string));
   console.error(error);
 }
