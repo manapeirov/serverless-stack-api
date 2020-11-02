@@ -14,7 +14,7 @@ custom:
   # Or falls back to what we have set in the provider section.
   stage: ${opt:stage, self:provider.stage}
   # Name of the SST app that's deploying the infrastructure
-  sstApp: ${self:custom.stage}-mana-notes-infrastructure
+  sstApp: ${self:custom.stage}-mana-notes-infra
 
 provider:
   name: aws
