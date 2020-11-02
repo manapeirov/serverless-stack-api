@@ -1,5 +1,5 @@
 {
-  "name": "mana-notes-infra",
+  "name": "mana-notes-infrastructure",
   "type": "@serverless-stack/resources",
   "stage": "dev",
   "region": "us-east-1"
