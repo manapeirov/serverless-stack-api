@@ -1,9 +1,9 @@
-import * as uuid from 'uuid';
-import handler from './libs/handler-lib';
-import dynamoDb from './libs/dynamodb-lib';
+import handler from "./libs/handler-lib"
+import * as uuid from "uuid"
+import dynamoDb from "./libs/dynamodb-lib"
 
 export const main = handler(async (event, context) => {
-  const data = JSON.parse(event.body);
+  const data = JSON.parse(event.body)
   const params = {
     TableName: process.env.tableName,
     Item: {
@@ -11,18 +11,17 @@ export const main = handler(async (event, context) => {
       noteId: uuid.v1(),
       content: data.content,
       attachment: data.attachment,
-      createdAt: Date.now()
-    }
-  };
+      createdAt: Date.now(),
+    },
+  }
   // Simplify how we make calls to DynamoDB.
   // Don’t want to have to create a new AWS.DynamoDB.DocumentClient().
   // Also, use async/await when working with our database calls.
-  await dynamoDb.put(params);
+  await dynamoDb.put(params)
   // Make our Lambda functions async, and simply return the results.
   // Without having to call the callback method.
-  return params.Item;
-});
-
+  return params.Item
+})
 
 // Since all of our Lambda functions will be handling API endpoints, handle HTTP responses in one place.
 
@@ -97,4 +96,3 @@ export const main = handler(async (event, context) => {
 //
 // }
 //
-
