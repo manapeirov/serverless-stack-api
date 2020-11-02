@@ -1,6 +1,15 @@
 import handler from "./libs/handler-lib";
 import dynamoDb from "./libs/dynamodb-lib";
 
+// Code to cause lambda timeout ()
+// function allocateMemory() {
+//   let bigList = Array(409600).fill(1);
+//   return bigList.concat(allocateMemory());
+// }
+
+// Some faulty code outside of lambda function:
+// dynamoDb_lib.notExist()
+
 export const main = handler(async (event, context) => {
   const params = {
     TableName: process.env.tableName,
@@ -18,8 +27,10 @@ export const main = handler(async (event, context) => {
     throw new Error("Item not found.");
   }
 
-  // Set a timeout
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  // // Set a timeout
+  // await new Promise((resolve) => setTimeout(resolve, 10000));
+
+  // allocateMemory();
 
   // Return the retrieved item
   return result.Item;
